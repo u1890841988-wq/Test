@@ -14,11 +14,12 @@ Du musst nichts installieren. Öffne einfach die `index.html` in deinem Browser.
 - [ ] Daten im Browser speichern (LocalStorage)
 - [ ] Dark Mode hinzufügen
 - [ ] Kategorien für Wünsche (z.B. "Technik", "Reisen")
+- [ ] meinButton
+// 1. Den Button im Code finden (über die ID)
+const btn = document.getElementById('meinButton');
 
-<button onclick="- [ ] Kategorien für Wünsche (z.B. "Technik", "Reisen")">Klick mich</button>
-
-<script>
-  function - [ ] Kategorien für Wünsche (z.B. "Technik", "Reisen")() {
-    alert(- [✅] Kategorien für Wünsche (z.B. "Technik", "Reisen"));
-  }
-</script>
+// 2. Ihm sagen, worauf er hören soll
+btn.addEventListener('click', function() {
+    console.log("Button wurde geklickt!");
+    document.body.style.backgroundColor = "lightblue"; // Ändert die Hintergrundfarbe
+});

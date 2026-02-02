@@ -1,61 +1,99 @@
-document.getElementById('fireworksButton').addEventListener('click', function() {
-    triggerFireworksAndShake();
+const body = document.getElementById('mainBody');
+const toggle = document.getElementById('toggleAnim');
+const statusText = document.getElementById('status');
+let fireworkInterval;
+
+// --- 1. FARBE ÄNDERN LOGIK ---
+document.getElementById('farbeBtn').addEventListener('click', function() {
+    const r = Math.floor(Math.random() * 256);
+    const g = Math.floor(Math.random() * 256);
+    const b = Math.floor(Math.random() * 256);
+    const neueFarbe = `rgb(${r}, ${g}, ${b})`;
+    
+    body.style.backgroundColor = neueFarbe;
+    this.innerText = neueFarbe; // Zeigt den Farbcode im Button an
 });
 
-function triggerFireworksAndShake() {
-    // 1. Wackel-Effekt aktivieren
-    document.body.classList.add('shake');
-    // Nach der Animation den Wackel-Effekt entfernen
+// --- 2. WELLEN-EFFEKT (RIPPLE) LOGIK ---
+document.getElementById('welleBtn').addEventListener('click', function(e) {
+    const ripple = document.createElement('span');
+    ripple.className = 'ripple';
+    
+    // Position relativ zum Button berechnen
+    const rect = this.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    ripple.style.left = `${x}px`;
+    ripple.style.top = `${y}px`;
+    
+    this.appendChild(ripple);
+    
+    // Nach der CSS-Animation entfernen
     setTimeout(() => {
-        document.body.classList.remove('shake');
-    }, 500); // Entspricht der Dauer der CSS-Shake-Animation
+        ripple.remove();
+    }, 600);
+});
 
-    // 2. Mehrere Feuerwerke zünden
-    const numFireworks = 15; // Anzahl der Feuerwerke
-    for (let i = 0; i < numFireworks; i++) {
-        setTimeout(() => {
-            createFirework();
-        }, i * 100); // Jedes Feuerwerk zeitlich versetzt starten
+// --- 3. MASSIVES FEUERWERK (TOGGLE) LOGIK ---
+toggle.addEventListener('change', function() {
+    if (this.checked) {
+        statusText.innerText = "🎆 MASSEN-FEUERWERK AN 🎆";
+        statusText.style.color = "#ffcc00";
+        
+        // Intervall für Dauer-Explosionen (alle 40ms)
+        fireworkInterval = setInterval(() => {
+            // Erzeugt pro Intervall 10 Explosionen an zufälligen Orten
+            for(let i = 0; i < 10; i++) {
+                const randomX = Math.random() * window.innerWidth;
+                const randomY = Math.random() * window.innerHeight;
+                createFirework(randomX, randomY);
+            }
+        }, 40); 
+    } else {
+        // Stop & Aufräumen
+        statusText.innerText = "Status: Bereit";
+        statusText.style.color = "#aaa";
+        clearInterval(fireworkInterval);
     }
-}
+});
 
-function createFirework() {
-    const firework = document.createElement('div');
-    firework.classList.add('firework');
+// FUNKTION: EINZELNES FEUERWERK ERZEUGEN
+function createFirework(x, y) {
+    const color = `hsl(${Math.random() * 360}, 100%, 65%)`;
+    const particleCount = 20; // Anzahl der Funken pro Knall
 
-    // Zufällige Startposition am unteren Bildschirmrand
-    const startX = Math.random() * window.innerWidth;
-    const startY = window.innerHeight; // Startet am unteren Rand
+    for (let i = 0; i < particleCount; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        
+        // Zufällige Größe der Funken
+        const size = Math.random() * 6 + 2;
+        p.style.width = size + 'px';
+        p.style.height = size + 'px';
+        p.style.backgroundColor = color;
+        p.style.left = x + 'px';
+        p.style.top = y + 'px';
+        p.style.boxShadow = `0 0 10px ${color}`;
+        
+        document.body.appendChild(p);
 
-    // Zufällige Zielfarbe für das Feuerwerk
-    const colors = ['#ff00ff', '#00ffff', '#ffff00', '#00ff00', '#ff6600', '#ff0000'];
-    const randomColor = colors[Math.floor(Math.random() * colors.length)];
-    firework.style.backgroundColor = randomColor;
-    firework.style.color = randomColor; // Für den box-shadow im Keyframe
+        // Flugrichtung und Weite berechnen
+        const angle = Math.random() * Math.PI * 2;
+        const velocity = 50 + Math.random() * 150;
+        const destX = Math.cos(angle) * velocity;
+        const destY = Math.sin(angle) * velocity;
 
-    // Zufällige Zielposition im oberen/mittleren Bereich
-    const endX = Math.random() * window.innerWidth * 0.8 + window.innerWidth * 0.1; // Nicht ganz am Rand
-    const endY = Math.random() * window.innerHeight * 0.5; // Im oberen Bereich
+        // Animation ausführen
+        const anim = p.animate([
+            { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+            { transform: `translate(${destX}px, ${destY}px) scale(0)`, opacity: 0 }
+        ], { 
+            duration: 600 + Math.random() * 400, 
+            easing: 'ease-out' 
+        });
 
-    firework.style.left = `${startX}px`;
-    firework.style.top = `${startY}px`;
-
-    // Animation für das "Aufsteigen" des Feuerwerks
-    // (Der "Explode"-Teil ist in CSS)
-    firework.animate([
-        { transform: `translate(-50%, 0)`, opacity: 0.8 },
-        { transform: `translate(${endX - startX}px, ${endY - startY}px)`, opacity: 1 }
-    ], {
-        duration: 800 + Math.random() * 400, // Zufällige Dauer
-        easing: 'ease-out',
-        fill: 'forwards'
-    }).onfinish = () => {
-        // Wenn das Aufsteigen beendet ist, explodiert es (durch CSS-Keyframe)
-        // und wird dann entfernt
-        setTimeout(() => {
-            firework.remove();
-        }, 1500); // Entspricht der Dauer von firework-explode
-    };
-
-    document.body.appendChild(firework);
+        // Partikel nach Ende löschen, um Browser-Speicher zu sparen
+        anim.onfinish = () => p.remove();
+    }
 }

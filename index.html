@@ -1,0 +1,8 @@
+// 1. Den Button im Code finden (über die ID)
+const btn = document.getElementById('meinButton');
+
+// 2. Ihm sagen, worauf er hören soll
+btn.addEventListener('click', function() {
+    console.log("Button wurde geklickt!");
+    document.body.style.backgroundColor = "lightblue"; // Ändert die Hintergrundfarbe
+});

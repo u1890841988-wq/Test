@@ -11,9 +11,10 @@
 </head>
 <body>
 
-    <h1>Meine interaktive Seite 🚀</h1>
+    <h1>Mein button test 🚀</h1>
     
     <button id="meinButton">Farbe ändern!</button>
+    <button id="mein">Farbe ändern!</button>
 
 <script>
     const btn = document.getElementById('meinButton');
@@ -34,6 +35,31 @@
         btn.innerText = neueFarbe;
     });
 </script> 
+
+    <script>
+    const button = document.querySelector('mein');
+
+button.addEventListener('click', function(e) {
+  // Ripple-Element erstellen
+  const ripple = document.createElement('span');
+  
+  // Position berechnen
+  const x = e.clientX - e.target.offsetLeft;
+  const y = e.clientY - e.target.offsetTop;
+  
+  ripple.style.left = `${x}px`;
+  ripple.style.top = `${y}px`;
+  
+  // CSS-Klasse für die Animation hinzufügen
+  this.appendChild(ripple);
+  
+  // Element nach der Animation entfernen
+  setTimeout(() => {
+    ripple.remove();
+  }, 600);
+});
+</script> 
+
 
 </body>
 </html>

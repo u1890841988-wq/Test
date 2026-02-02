@@ -15,18 +15,25 @@
     
     <button id="meinButton">Farbe ändern!</button>
 
-    <script>
-        // 1. Den Button im Code finden (über die ID)
-        const btn = document.getElementById('meinButton');
+<script>
+    const btn = document.getElementById('meinButton');
 
-        // 2. Ihm sagen, was beim Klick passieren soll
-        btn.addEventListener('click', function() {
-            console.log("Button wurde geklickt!");
-            // Ändert die Hintergrundfarbe auf eine zufällige helle Farbe
-            const randomColor = "lightblue"; 
-            document.body.style.backgroundColor = randomColor;
-        });
-    </script>
+    btn.addEventListener('click', function() {
+        // Wir generieren drei Zufallszahlen zwischen 0 und 255
+        const r = Math.floor(Math.random() * 256);
+        const g = Math.floor(Math.random() * 256);
+        const b = Math.floor(Math.random() * 256);
+
+        // Wir bauen den CSS-String zusammen, z.B. "rgb(120, 45, 200)"
+        const neueFarbe = `rgb(${r}, ${g}, ${b})`;
+
+        // Wir wenden die Farbe auf den Hintergrund an
+        document.body.style.backgroundColor = neueFarbe;
+        
+        // Bonus: Wir zeigen den Farbcode im Button an
+        btn.innerText = neueFarbe;
+    });
+</script> 
 
 </body>
 </html>

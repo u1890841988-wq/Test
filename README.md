@@ -13,6 +13,8 @@ Du musst nichts installieren. Öffne einfach die `index.html` in deinem Browser.
 ## Roadmap
 - [ ] Daten im Browser speichern (LocalStorage)
 - [ ] Dark Mode hinzufügen
+- [ ] Kategorien für Wünsche (z.B. "Technik", "Reisen")
+
 <button onclick="- [ ] Kategorien für Wünsche (z.B. "Technik", "Reisen")">Klick mich</button>
 
 <script>

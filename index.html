@@ -2,80 +2,154 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Meine Test</title>
+    <title>Ultimative Button-Explosion 🚀</title>
     <style>
-        body { font-family: sans-serif; text-align: center; padding-top: 50px; transition: background 0.5s; }
-        
+        /* Grunddesign */
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            text-align: center; 
+            padding-top: 50px; 
+            transition: background 0.5s; 
+            background-color: #1a1a1a;
+            color: white;
+            margin: 0;
+            overflow: hidden; /* Verhindert Scrollen bei Explosionen */
+            height: 100vh;
+        }
+
+        h1 { margin-bottom: 30px; text-shadow: 2px 2px 10px rgba(0,0,0,0.5); }
+
+        .container { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+
+        /* Button Styles */
         button { 
             padding: 15px 30px; 
             font-size: 1.2rem; 
             cursor: pointer; 
-            border-radius: 8px; 
+            border-radius: 12px; 
             border: none; 
-            background: #007bff; 
             color: white; 
-            position: relative; /* Wichtig für Ripple-Position */
-            overflow: hidden;    /* Verhindert, dass der Kreis ausbricht */
-            outline: none;
+            position: relative; 
+            overflow: hidden; 
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
-        #meinButton { background: #00ff00; margin-right: 10px; }
+        button:active { transform: scale(0.95); }
 
-        /* Das Styling für den Ripple-Effekt */
+        #meinButton { background: #00ff00; color: #000; font-weight: bold; }
+        #mein { background: #007bff; }
+        #megaExplosion { background: linear-gradient(45deg, #ff416c, #ff4b2b); font-weight: bold; }
+
+        /* Wackel-Animation für die ganze Seite */
+        .shake {
+            animation: shakeScreen 0.4s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        @keyframes shakeScreen {
+            10%, 90% { transform: translate3d(-2px, 0, 0); }
+            20%, 80% { transform: translate3d(4px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+            40%, 60% { transform: translate3d(6px, 0, 0); }
+        }
+
+        /* Feuerwerk Partikel */
+        .particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        /* Ripple Effekt für den mittleren Button */
         .ripple {
             position: absolute;
-            background: rgba(255, 255, 255, 0.7);
+            background: rgba(255, 255, 255, 0.5);
             transform: translate(-50%, -50%);
             pointer-events: none;
             border-radius: 50%;
-            animation: animate 0.6s linear;
+            animation: rippleAnim 0.6s linear;
         }
 
-        @keyframes animate {
-            0% { width: 0px; height: 0px; opacity: 0.5; }
-            100% { width: 500px; height: 500px; opacity: 0; }
+        @keyframes rippleAnim {
+            0% { width: 0; height: 0; opacity: 1; }
+            100% { width: 400px; height: 400px; opacity: 0; }
         }
     </style>
 </head>
-<body>
+<body id="body">
 
-    <h1>Mein button test 🚀</h1>
+    <h1>Button Laboratory 🧪</h1>
     
-    <button id="meinButton">Farbe ändern!</button>
-    <button id="mein">Animation starten</button>
+    <div class="container">
+        <button id="meinButton">Farbe ändern!</button>
+
+        <button id="mein">Wellen-Effekt</button>
+
+        <button id="megaExplosion">FEUERWERK! 🎆</button>
+    </div>
 
 <script>
-    // Erster Button: Hintergrundfarbe ändern
-    const btn = document.getElementById('meinButton');
-    btn.addEventListener('click', function() {
-        const r = Math.floor(Math.random() * 256);
-        const g = Math.floor(Math.random() * 256);
-        const b = Math.floor(Math.random() * 256);
-        const neueFarbe = `rgb(${r}, ${g}, ${b})`;
-        document.body.style.backgroundColor = neueFarbe;
-        btn.innerText = neueFarbe;
+    // --- LOGIK 1: FARBE ÄNDERN ---
+    const btnFarbe = document.getElementById('meinButton');
+    btnFarbe.addEventListener('click', () => {
+        const r = Math.floor(Math.random() * 256), g = Math.floor(Math.random() * 256), b = Math.floor(Math.random() * 256);
+        const color = `rgb(${r}, ${g}, ${b})`;
+        document.body.style.backgroundColor = color;
+        btnFarbe.innerText = color;
     });
 
-    // Zweiter Button: Ripple Animation
-    const animBtn = document.getElementById('mein');
-    animBtn.addEventListener('click', function(e) {
+    // --- LOGIK 2: RIPPLE EFFEKT ---
+    const btnRipple = document.getElementById('mein');
+    btnRipple.addEventListener('click', function(e) {
         const ripple = document.createElement('span');
         ripple.classList.add('ripple');
-        
-        // Position relativ zum Button berechnen
-        const x = e.clientX - e.target.getBoundingClientRect().left;
-        const y = e.clientY - e.target.getBoundingClientRect().top;
-        const x = e.clientX - e.target.getBoundingClientRect().bottom;
-        
-        ripple.style.left = `${x}px`;
-        ripple.style.top = `${y}px`;
-        
+        const rect = this.getBoundingClientRect();
+        ripple.style.left = `${e.clientX - rect.left}px`;
+        ripple.style.top = `${e.clientY - rect.top}px`;
         this.appendChild(ripple);
-        
-        setTimeout(() => {
-            ripple.remove();
-        }, 600);
+        setTimeout(() => ripple.remove(), 600);
     });
+
+    // --- LOGIK 3: FEUERWERK & WACKELN ---
+    const btnMega = document.getElementById('megaExplosion');
+    
+    btnMega.addEventListener('click', () => {
+        // Wackeln auslösen
+        document.body.classList.add('shake');
+        setTimeout(() => document.body.classList.remove('shake'), 400);
+
+        // Feuerwerk spawnen
+        for (let i = 0; i < 50; i++) {
+            createParticle(window.innerWidth / 2, window.innerHeight / 2);
+        }
+    });
+
+    function createParticle(x, y) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        document.body.appendChild(particle);
+
+        // Zufällige Farbe und Richtung
+        const color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+        particle.style.backgroundColor = color;
+        particle.style.boxShadow = `0 0 10px ${color}`;
+
+        const destX = (Math.random() - 0.5) * 800;
+        const destY = (Math.random() - 0.5) * 800;
+
+        const animation = particle.animate([
+            { transform: 'translate(-50%, -50%) translate(0, 0)', opacity: 1 },
+            { transform: `translate(-50%, -50%) translate(${destX}px, ${destY}px)`, opacity: 0 }
+        ], {
+            duration: 1000 + Math.random() * 1000,
+            easing: 'cubic-bezier(0, .9, .57, 1)'
+        });
+
+        animation.onfinish = () => particle.remove();
+    }
 </script> 
 
 </body>

@@ -2,139 +2,194 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Feuerwerk Wahnsinn 🎆</title>
+    <title>Button Control Center ⚡</title>
     <style>
         body { 
-            font-family: 'Arial', sans-serif; 
+            font-family: 'Arial Black', sans-serif; 
             text-align: center; 
-            padding-top: 50px; 
             background-color: #111;
-            color: white;
+            color: #fff;
             margin: 0;
             overflow: hidden; 
             height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             transition: background 0.3s;
         }
 
-        /* Der Toggle-Button */
+        .ui-panel {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            z-index: 1000;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        /* Standard Buttons */
+        button { 
+            padding: 15px 25px; 
+            font-size: 1rem; 
+            cursor: pointer; 
+            border-radius: 10px; 
+            border: none; 
+            color: white; 
+            position: relative; 
+            overflow: hidden;
+            font-weight: bold;
+            transition: transform 0.1s;
+        }
+        button:active { transform: scale(0.9); }
+
+        #meinButton { background: #00ff00; color: #000; }
+        #mein { background: #007bff; }
+
+        /* Der Mega-Toggle */
         .switch {
             position: relative;
             display: inline-block;
-            width: 80px;
-            height: 40px;
+            width: 100px;
+            height: 50px;
         }
-
         .switch input { opacity: 0; width: 0; height: 0; }
-
         .slider {
             position: absolute;
             cursor: pointer;
             top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #555;
-            transition: .4s;
-            border-radius: 34px;
+            background-color: #333;
+            transition: .2s;
+            border-radius: 50px;
         }
-
         .slider:before {
             position: absolute;
-            content: "";
-            height: 32px; width: 32px;
+            content: "OFF";
+            line-height: 42px;
+            color: #000;
+            height: 42px; width: 42px;
             left: 4px; bottom: 4px;
             background-color: white;
-            transition: .4s;
+            transition: .2s;
             border-radius: 50%;
+            font-size: 0.8rem;
         }
+        input:checked + .slider { background-color: #ff0000; box-shadow: 0 0 30px #ff0000; }
+        input:checked + .slider:before { transform: translateX(50px); content: "ON"; background-color: #ffcc00; }
 
-        input:checked + .slider { background-color: #ff0055; box-shadow: 0 0 20px #ff0055; }
-        input:checked + .slider:before { transform: translateX(40px); }
-
-        /* Dauerhaftes Wackeln, wenn aktiv */
-        .infinite-shake {
-            animation: shake 0.1s infinite;
-        }
-
+        /* Animationen */
+        .ultra-shake { animation: shake 0.05s infinite; }
         @keyframes shake {
-            0% { transform: translate(1px, 1px) rotate(0deg); }
-            25% { transform: translate(-1px, -2px) rotate(-1deg); }
-            50% { transform: translate(-3px, 0px) rotate(1deg); }
-            75% { transform: translate(3px, 2px) rotate(0deg); }
-            100% { transform: translate(1px, -1px) rotate(1deg); }
+            0% { transform: translate(4px, 4px); }
+            50% { transform: translate(-4px, -6px); }
+            100% { transform: translate(2px, 4px); }
         }
 
-        .particle {
+        .particle { position: absolute; border-radius: 50%; pointer-events: none; z-index: 10; }
+
+        .ripple {
             position: absolute;
-            width: 6px; height: 6px;
+            background: rgba(255, 255, 255, 0.6);
+            transform: translate(-50%, -50%);
             border-radius: 50%;
-            pointer-events: none;
-            z-index: 999;
+            animation: rippleAnim 0.6s linear;
+        }
+        @keyframes rippleAnim {
+            0% { width: 0; height: 0; opacity: 1; }
+            100% { width: 300px; height: 300px; opacity: 0; }
         }
     </style>
 </head>
 <body id="mainBody">
 
-    <h1>FEUERWERK MODUS</h1>
-    
-    <label class="switch">
-      <input type="checkbox" id="toggleAnim">
-      <span class="slider"></span>
-    </label>
-    <p id="status">AUS</p>
+    <div class="ui-panel">
+        <h1>CONTROL CENTER</h1>
+        
+        <div class="button-group">
+            <button id="meinButton">Farbe ändern</button>
+
+            <button id="mein">Wellen-Effekt</button>
+
+            <label class="switch">
+              <input type="checkbox" id="toggleAnim">
+              <span class="slider"></span>
+            </label>
+        </div>
+        
+        <p id="status" style="font-weight: bold;">Eskalations-Modus: AUS</p>
+    </div>
 
 <script>
+    // 1. FARB-LOGIK
+    const btnFarbe = document.getElementById('meinButton');
+    btnFarbe.addEventListener('click', () => {
+        const r = Math.floor(Math.random()*256), g = Math.floor(Math.random()*256), b = Math.floor(Math.random()*256);
+        document.body.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+        btnFarbe.innerText = `rgb(${r}, ${g}, ${b})`;
+    });
+
+    // 2. RIPPLE-LOGIK
+    const btnRipple = document.getElementById('mein');
+    btnRipple.addEventListener('click', function(e) {
+        const rip = document.createElement('span');
+        rip.className = 'ripple';
+        const rect = this.getBoundingClientRect();
+        rip.style.left = (e.clientX - rect.left) + 'px';
+        rip.style.top = (e.clientY - rect.top) + 'px';
+        this.appendChild(rip);
+        setTimeout(() => rip.remove(), 600);
+    });
+
+    // 3. 10X ESKALATIONS-LOGIK
     const toggle = document.getElementById('toggleAnim');
     const body = document.getElementById('mainBody');
-    const statusText = document.getElementById('status');
     let fireworkInterval;
 
     toggle.addEventListener('change', function() {
         if (this.checked) {
-            statusText.innerText = "ESKALATION! 🔥";
-            body.classList.add('infinite-shake');
-            
-            // Intervall für Dauer-Feuerwerk
+            document.getElementById('status').innerText = "SYSTEM CRASH IMMINENT!";
+            body.classList.add('ultra-shake');
             fireworkInterval = setInterval(() => {
-                // Erzeugt Partikel an zufälligen Orten auf dem ganzen Bildschirm
-                for(let i = 0; i < 5; i++) {
-                    createFirework(
-                        Math.random() * window.innerWidth, 
-                        Math.random() * window.innerHeight
-                    );
+                for(let i = 0; i < 15; i++) {
+                    createFirework(Math.random() * window.innerWidth, Math.random() * window.innerHeight);
                 }
-            }, 100); // Alle 100ms neue Explosionen
-            
+            }, 30); 
         } else {
-            statusText.innerText = "AUS";
-            body.classList.remove('infinite-shake');
+            document.getElementById('status').innerText = "Eskalations-Modus: AUS";
+            body.classList.remove('ultra-shake');
             clearInterval(fireworkInterval);
         }
     });
 
     function createFirework(x, y) {
-        const count = 10;
-        const color = `hsl(${Math.random() * 360}, 100%, 60%)`;
-
+        const count = 40;
+        const color = `hsl(${Math.random() * 360}, 100%, 70%)`;
         for (let i = 0; i < count; i++) {
             const p = document.createElement('div');
             p.className = 'particle';
+            const size = Math.random() * 8 + 2;
+            p.style.width = size + 'px'; p.style.height = size + 'px';
             p.style.backgroundColor = color;
-            p.style.left = x + 'px';
-            p.style.top = y + 'px';
+            p.style.left = x + 'px'; p.style.top = y + 'px';
             p.style.boxShadow = `0 0 10px ${color}`;
             document.body.appendChild(p);
 
             const angle = Math.random() * Math.PI * 2;
-            const velocity = 50 + Math.random() * 150;
+            const velocity = 80 + Math.random() * 300;
             const destX = Math.cos(angle) * velocity;
             const destY = Math.sin(angle) * velocity;
 
             const anim = p.animate([
                 { transform: 'translate(0, 0) scale(1)', opacity: 1 },
                 { transform: `translate(${destX}px, ${destY}px) scale(0)`, opacity: 0 }
-            ], {
-                duration: 500 + Math.random() * 500,
-                easing: 'ease-out'
-            });
-
+            ], { duration: 500 + Math.random() * 500, easing: 'ease-out' });
             anim.onfinish = () => p.remove();
         }
     }

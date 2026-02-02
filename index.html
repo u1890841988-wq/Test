@@ -1,8 +1,32 @@
-// 1. Den Button im Code finden (über die ID)
-const btn = document.getElementById('meinButton');
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Meine Wunschliste Test</title>
+    <style>
+        /* Hier machen wir den Button ein bisschen hübsch */
+        body { font-family: sans-serif; text-align: center; padding-top: 50px; transition: background 0.5s; }
+        button { padding: 15px 30px; font-size: 1.2rem; cursor: pointer; border-radius: 8px; border: none; background: #007bff; color: white; }
+    </style>
+</head>
+<body>
 
-// 2. Ihm sagen, worauf er hören soll
-btn.addEventListener('click', function() {
-    console.log("Button wurde geklickt!");
-    document.body.style.backgroundColor = "lightblue"; // Ändert die Hintergrundfarbe
-});
+    <h1>Meine interaktive Seite 🚀</h1>
+    
+    <button id="meinButton">Farbe ändern!</button>
+
+    <script>
+        // 1. Den Button im Code finden (über die ID)
+        const btn = document.getElementById('meinButton');
+
+        // 2. Ihm sagen, was beim Klick passieren soll
+        btn.addEventListener('click', function() {
+            console.log("Button wurde geklickt!");
+            // Ändert die Hintergrundfarbe auf eine zufällige helle Farbe
+            const randomColor = "lightblue"; 
+            document.body.style.backgroundColor = randomColor;
+        });
+    </script>
+
+</body>
+</html>

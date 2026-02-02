@@ -4,9 +4,37 @@
     <meta charset="UTF-8">
     <title>Meine Test</title>
     <style>
-        /* Hier machen wir den Button ein bisschen hübsch */
         body { font-family: sans-serif; text-align: center; padding-top: 50px; transition: background 0.5s; }
-        button { padding: 15px 30px; font-size: 1.2rem; cursor: pointer; border-radius: 8px; border: none; background: #00ff00; color: white; }
+        
+        button { 
+            padding: 15px 30px; 
+            font-size: 1.2rem; 
+            cursor: pointer; 
+            border-radius: 8px; 
+            border: none; 
+            background: #007bff; 
+            color: white; 
+            position: relative; /* Wichtig für Ripple-Position */
+            overflow: hidden;    /* Verhindert, dass der Kreis ausbricht */
+            outline: none;
+        }
+
+        #meinButton { background: #00ff00; margin-right: 10px; }
+
+        /* Das Styling für den Ripple-Effekt */
+        .ripple {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.7);
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            border-radius: 50%;
+            animation: animate 0.6s linear;
+        }
+
+        @keyframes animate {
+            0% { width: 0px; height: 0px; opacity: 0.5; }
+            100% { width: 500px; height: 500px; opacity: 0; }
+        }
     </style>
 </head>
 <body>
@@ -14,52 +42,40 @@
     <h1>Mein button test 🚀</h1>
     
     <button id="meinButton">Farbe ändern!</button>
-    <button id="mein">Farbe ändern!</button>
+    <button id="mein">Animation starten</button>
 
 <script>
+    // Erster Button: Hintergrundfarbe ändern
     const btn = document.getElementById('meinButton');
-
     btn.addEventListener('click', function() {
-        // Wir generieren drei Zufallszahlen zwischen 0 und 255
         const r = Math.floor(Math.random() * 256);
         const g = Math.floor(Math.random() * 256);
         const b = Math.floor(Math.random() * 256);
-
-        // Wir bauen den CSS-String zusammen, z.B. "rgb(120, 45, 200)"
         const neueFarbe = `rgb(${r}, ${g}, ${b})`;
-
-        // Wir wenden die Farbe auf den Hintergrund an
         document.body.style.backgroundColor = neueFarbe;
-        
-        // Bonus: Wir zeigen den Farbcode im Button an
         btn.innerText = neueFarbe;
     });
+
+    // Zweiter Button: Ripple Animation
+    const animBtn = document.getElementById('mein');
+    animBtn.addEventListener('click', function(e) {
+        const ripple = document.createElement('span');
+        ripple.classList.add('ripple');
+        
+        // Position relativ zum Button berechnen
+        const x = e.clientX - e.target.getBoundingClientRect().left;
+        const y = e.clientY - e.target.getBoundingClientRect().top;
+        
+        ripple.style.left = `${x}px`;
+        ripple.style.top = `${y}px`;
+        
+        this.appendChild(ripple);
+        
+        setTimeout(() => {
+            ripple.remove();
+        }, 600);
+    });
 </script> 
-
-    <script>
-    const button = document.querySelector('mein');
-
-button.addEventListener('click', function(e) {
-  // Ripple-Element erstellen
-  const ripple = document.createElement('span');
-  
-  // Position berechnen
-  const x = e.clientX - e.target.offsetLeft;
-  const y = e.clientY - e.target.offsetTop;
-  
-  ripple.style.left = `${x}px`;
-  ripple.style.top = `${y}px`;
-  
-  // CSS-Klasse für die Animation hinzufügen
-  this.appendChild(ripple);
-  
-  // Element nach der Animation entfernen
-  setTimeout(() => {
-    ripple.remove();
-  }, 600);
-});
-</script> 
-
 
 </body>
 </html>

@@ -65,6 +65,7 @@
         // Position relativ zum Button berechnen
         const x = e.clientX - e.target.getBoundingClientRect().left;
         const y = e.clientY - e.target.getBoundingClientRect().top;
+        const x = e.clientX - e.target.getBoundingClientRect().bottom;
         
         ripple.style.left = `${x}px`;
         ripple.style.top = `${y}px`;
